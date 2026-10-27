@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 import type { CatalogModel } from '../data/catalog';
+import CtaButton from './CtaButton';
 import Icon from './Icon';
 import ProductViewer from './ProductViewer';
 
@@ -146,13 +147,7 @@ export default function ProductModal({
             </div>
 
             <div className="modal-actions">
-              <button
-                type="button"
-                className="button button-dark"
-                onClick={onRequestSample}
-              >
-                Quiero un catálogo así <Icon name="arrow-up-right" size={16} />
-              </button>
+              <CtaButton onClick={onRequestSample}>Quiero un catálogo así</CtaButton>
               <button type="button" className="button button-outline" onClick={onOpenSpecs}>
                 Experiencia 3D <Icon name="arrow-right" size={16} />
               </button>

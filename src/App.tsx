@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import BinecLogo from './components/BinecLogo';
 import CatalogSection from './components/CatalogSection';
+import CtaButton from './components/CtaButton';
 import Icon from './components/Icon';
 import ProductModal from './components/ProductModal';
 import SampleRequest from './components/SampleRequest';
@@ -256,9 +257,9 @@ export default function App() {
           </nav>
 
           <div className="nav-actions">
-            <button type="button" className="button button-dark nav-cta" onClick={() => requestSample()}>
-              Cotizar catálogo <Icon name="arrow-up-right" size={16} />
-            </button>
+            <CtaButton size="compact" className="nav-cta" onClick={() => requestSample()}>
+              Cotizar catálogo
+            </CtaButton>
             <button
               type="button"
               className="mobile-menu-button"
@@ -318,16 +319,15 @@ export default function App() {
                   se convierta en una tienda lista para vender.
                 </p>
                 <div className="commerce-actions">
-                  <button
-                    type="button"
-                    className="button button-dark"
+                  <CtaButton
+                    icon="arrow-down"
                     onClick={() => {
                       requestTopic(ECOMMERCE_TOPIC);
                       document.getElementById('cotizacion')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
                   >
-                    Quiero vender en línea <Icon name="arrow-up-right" size={17} />
-                  </button>
+                    Quiero vender en línea
+                  </CtaButton>
                   <a
                     className="button button-outline commerce-whatsapp"
                     href={ecommerceWhatsApp}
@@ -436,35 +436,29 @@ export default function App() {
         <section id="contacto" className="contact-section section-anchor">
           <div className="page-container contact-layout">
             <div className="contact-intro">
-              <span className="section-index">04 / Contacto</span>
-              <h2 data-scroll-title="">Hagamos tu<br />catálogo 3D.</h2>
+              <span className="section-index"><span>(04)</span>&nbsp;&nbsp;Contacto</span>
+              <h2 data-scroll-title="">Hagamos tu<br />catálogo 3D<span className="accent-dot">.</span></h2>
               <p>Cuéntanos qué vendes y qué quieres mostrar. En BINEC te ayudamos a definir un catálogo 3D a la medida de tu marca.</p>
 
-              <div className="contact-methods">
-                <a href="mailto:hola@bineccc.com">
-                  <span><Icon name="mail" size={20} /></span>
-                  <div><small>Correo</small><strong>hola@bineccc.com</strong></div>
-                  <Icon name="arrow-up-right" size={17} />
-                </a>
+              <div className="contact-links">
+                <a className="contact-email" href="mailto:hola@bineccc.com">hola@bineccc.com</a>
                 <a
+                  className="contact-whatsapp"
                   href="https://wa.me/528130738347"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Escribir por WhatsApp al +52 813 073 8347"
                 >
-                  <span><Icon name="whatsapp" size={20} /></span>
-                  <div><small>WhatsApp</small><strong>+52 813 073 8347</strong></div>
-                  <Icon name="arrow-up-right" size={17} />
+                  <span className="contact-whatsapp-badge"><Icon name="whatsapp" size={13} /></span>
+                  <span>WhatsApp: +52 813 073 8347</span>
+                  <span className="contact-whatsapp-arrow" aria-hidden="true">↗</span>
                 </a>
               </div>
 
-              <div className="contact-note">
-                <Icon name="check" size={17} />
-                <span>Para marcas, fabricantes y distribuidores que quieren presentar mejor sus productos.</span>
-              </div>
+              <p className="contact-note">Para marcas, fabricantes y distribuidores que quieren presentar mejor sus productos.</p>
             </div>
 
-            <div id="cotizacion"><SampleRequest /></div>
+            <div id="cotizacion" className="contact-form"><SampleRequest /></div>
           </div>
         </section>
       </main>
