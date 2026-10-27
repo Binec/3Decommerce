@@ -500,6 +500,7 @@ img, svg { display: block; }
 .catalog-empty { display: flex; flex-direction: column; align-items: center; padding: 80px 24px; border: 1px dashed #c9c7bf; border-radius: 8px; color: #777a81; text-align: center; }
 .catalog-empty h3 { margin: 20px 0 8px; color: var(--ink); font-family: 'Montserrat', sans-serif; font-size: 22px; }
 .catalog-empty p { margin: 0 0 24px; font-size: 13px; }
+.catalog-duplicate { padding: 48px 0 56px; border-top: 1px solid rgba(11,12,15,0.08); }
 
 /* Ecommerce banner */
 .commerce-banner { padding: 0 0 4px; }
@@ -830,6 +831,95 @@ img, svg { display: block; }
   .footer-main { grid-template-columns: 1fr; }
   .footer-main nav { max-width: 250px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* The duplicated catalogue is a compact, two-column mobile variant. */
+@media (max-width: 767px) {
+  .catalog-hero .catalog-grid { grid-template-columns: minmax(0, 1fr); }
+  .catalog-duplicate { padding-block: 28px 40px; }
+  .catalog-duplicate .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 599px) {
+  .catalog-duplicate .catalog-grid { gap: 10px; }
+  .catalog-duplicate .catalog-card { border-radius: 8px; }
+  .catalog-duplicate .catalog-preview { height: clamp(112px, 35vw, 154px); }
+  .catalog-duplicate .catalog-index { top: 10px; left: 10px; }
+  .catalog-duplicate .catalog-3d-label { top: 8px; right: 8px; padding: 4px 5px; }
+  .catalog-duplicate .catalog-card-body { padding: 12px; }
+  .catalog-duplicate .catalog-card-category { gap: 5px; font-size: 8px; letter-spacing: 0.08em; }
+  .catalog-duplicate .catalog-card-category .cat-dot { width: 6px; height: 6px; }
+  .catalog-duplicate .catalog-card h3 {
+    min-height: 0;
+    display: -webkit-box;
+    margin: 8px 0 10px;
+    overflow: hidden;
+    font-size: clamp(11px, 3.3vw, 13px);
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .catalog-duplicate .catalog-card-body > p { display: none; }
+  .catalog-duplicate .catalog-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 0;
+    padding-top: 10px;
+  }
+  .catalog-duplicate .catalog-card-footer > div > span { margin-bottom: 3px; font-size: 7px; }
+  .catalog-duplicate .catalog-card-footer strong { font-size: 10px; }
+  .catalog-duplicate .catalog-card-footer button {
+    width: 100%;
+    min-height: 36px;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 5px;
+    font-size: 9px;
+  }
+}
+
+/* Desktop: show five compact product cards in a single row. */
+@media (min-width: 1024px) {
+  .catalog-duplicate { padding-block: 40px 52px; }
+  .catalog-duplicate .catalog-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .catalog-duplicate .catalog-preview { height: 178px; }
+  .catalog-duplicate .catalog-card-body { padding: 13px; }
+  .catalog-duplicate .catalog-card-category { gap: 5px; font-size: 8px; letter-spacing: 0.08em; }
+  .catalog-duplicate .catalog-card-category .cat-dot { width: 6px; height: 6px; }
+  .catalog-duplicate .catalog-card h3 {
+    min-height: 33px;
+    display: -webkit-box;
+    margin: 8px 0;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .catalog-duplicate .catalog-card-body > p { display: none; }
+  .catalog-duplicate .catalog-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 9px;
+    margin-top: 0;
+    padding-top: 10px;
+  }
+  .catalog-duplicate .catalog-card-footer > div > span { margin-bottom: 3px; font-size: 7px; }
+  .catalog-duplicate .catalog-card-footer strong { font-size: 10px; }
+  .catalog-duplicate .catalog-card-footer button {
+    min-height: 36px;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 6px;
+    font-size: 9px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

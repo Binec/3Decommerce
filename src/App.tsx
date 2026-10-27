@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import CatalogCard from './components/CatalogCard';
 import BinecLogo from './components/BinecLogo';
+import CatalogSection from './components/CatalogSection';
 import Icon from './components/Icon';
 import ProductModal from './components/ProductModal';
 import SampleRequest from './components/SampleRequest';
@@ -287,86 +287,21 @@ export default function App() {
       </header>
 
       <main>
-        <section id="catalogo" className="catalog-section catalog-hero section-anchor">
-          <div className="page-container">
-            <div className="section-heading catalog-heading">
-              <div>
-                <span className="section-index">01 / Catálogo 3D</span>
-                <h1 data-scroll-title="">Tu catálogo.<br />Ahora en 3D.</h1>
-              </div>
-              <div className="section-heading-copy">
-                <span>Catálogos interactivos por BINEC</span>
-                <p>Transforma tus productos en una experiencia que tus clientes puedan explorar. Abre un modelo de esta demo e imagina tu marca en 3D.</p>
-              </div>
-            </div>
-
-            <div className="catalog-toolbar">
-              <div className="category-filters" aria-label="Filtrar por categoría">
-                <button type="button" className={activeCategoryFilter === 'todos' ? 'is-active' : ''} onClick={() => setCategoryFilter('todos')} aria-pressed={activeCategoryFilter === 'todos'}>
-                  Todos <span>{catalogModels.length}</span>
-                </button>
-                {catalogCategories.map((category) => (
-                  <button
-                    type="button"
-                    key={category.id}
-                    className={`cat-chip ${activeCategoryFilter === category.id ? 'is-active' : ''}`}
-                    style={{ '--cat-color': category.color } as CSSProperties}
-                    onClick={() => setCategoryFilter(category.id)}
-                    aria-pressed={activeCategoryFilter === category.id}
-                  >
-                    <span className="cat-dot" aria-hidden="true" />
-                    {category.name} <span>{category.models.length}</span>
-                  </button>
-                ))}
-              </div>
-              <div className="catalog-tools">
-                <label className="search-field">
-                  <span className="sr-only">Buscar en el catálogo</span>
-                  <Icon name="search" size={18} />
-                  <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar modelo…" type="search" />
-                  {query && <button type="button" onClick={() => setQuery('')} aria-label="Limpiar búsqueda"><Icon name="close" size={15} /></button>}
-                </label>
-                <label className="sort-field">
-                  <span className="sort-label" aria-hidden="true">Ordenar</span>
-                  <span className="sort-divider" aria-hidden="true" />
-                  <span className="sr-only">Ordenar catálogo</span>
-                  <select value={sort} onChange={(event) => setSort(event.target.value)}>
-                    <option value="featured">Destacados</option>
-                    <option value="name">Nombre A–Z</option>
-                    <option value="price-asc">Precio: menor</option>
-                    <option value="price-desc">Precio: mayor</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-
-            <div className="catalog-results-meta" aria-live="polite">
-              <span>{filteredModels.length} {filteredModels.length === 1 ? 'resultado' : 'resultados'}</span>
-              {(activeCategoryFilter !== 'todos' || query) && <button type="button" onClick={() => { setCategoryFilter('todos'); setQuery(''); }}>Limpiar filtros</button>}
-            </div>
-
-            {filteredModels.length > 0 ? (
-              <div className="catalog-grid">
-                {filteredModels.map((model) => (
-                  <CatalogCard
-                    key={model.id}
-                    model={model}
-                    index={allModels.findIndex((item) => item.id === model.id)}
-                    active={selectedModel.id === model.id}
-                    onSelect={openProduct}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="catalog-empty">
-                <Icon name="search" size={30} />
-                <h3>No encontramos ese modelo</h3>
-                <p>Pruebe con otra palabra o explore todas las categorías.</p>
-                <button type="button" className="button button-dark" onClick={() => { setCategoryFilter('todos'); setQuery(''); }}>Ver todos los modelos</button>
-              </div>
-            )}
-          </div>
-        </section>
+        <CatalogSection
+          variant="hero"
+          models={catalogModels}
+          categories={catalogCategories}
+          filteredModels={filteredModels}
+          selectedId={selectedModel.id}
+          categoryFilter={activeCategoryFilter}
+          query={query}
+          sort={sort}
+          onCategoryChange={setCategoryFilter}
+          onQueryChange={setQuery}
+          onSortChange={setSort}
+          onClearFilters={() => { setCategoryFilter('todos'); setQuery(''); }}
+          onSelect={openProduct}
+        />
 
         <section className="commerce-banner" aria-labelledby="commerce-title">
           <div className="page-container">
@@ -427,7 +362,7 @@ export default function App() {
           <div className="page-container">
             <div className="section-heading">
               <div>
-                <span className="section-index">02 / Experiencia 3D</span>
+                <span className="section-index">03 / Experiencia 3D</span>
                 <h2 data-scroll-title="">Muestra mejor.<br />Vende mejor.</h2>
               </div>
               <div className="section-heading-copy">
@@ -482,10 +417,26 @@ export default function App() {
           </div>
         </section>
 
+        <CatalogSection
+          variant="compact"
+          models={catalogModels}
+          categories={catalogCategories}
+          filteredModels={filteredModels}
+          selectedId={selectedModel.id}
+          categoryFilter={activeCategoryFilter}
+          query={query}
+          sort={sort}
+          onCategoryChange={setCategoryFilter}
+          onQueryChange={setQuery}
+          onSortChange={setSort}
+          onClearFilters={() => { setCategoryFilter('todos'); setQuery(''); }}
+          onSelect={openProduct}
+        />
+
         <section id="contacto" className="contact-section section-anchor">
           <div className="page-container contact-layout">
             <div className="contact-intro">
-              <span className="section-index">03 / Contacto</span>
+              <span className="section-index">04 / Contacto</span>
               <h2 data-scroll-title="">Hagamos tu<br />catálogo 3D.</h2>
               <p>Cuéntanos qué vendes y qué quieres mostrar. En BINEC te ayudamos a definir un catálogo 3D a la medida de tu marca.</p>
 
