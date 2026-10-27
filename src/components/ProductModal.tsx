@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 import type { CatalogModel } from '../data/catalog';
-import { allModels } from '../data/catalog';
 import Icon from './Icon';
 import ProductViewer from './ProductViewer';
 
 type ProductModalProps = {
   model: CatalogModel;
+  models: CatalogModel[];
   index: number;
   onClose: () => void;
   onStep: (direction: number) => void;
@@ -19,6 +19,7 @@ const FOCUSABLE =
 
 export default function ProductModal({
   model,
+  models,
   index,
   onClose,
   onStep,
@@ -81,8 +82,8 @@ export default function ProductModal({
     };
   }, []);
 
-  const previous = allModels[(index - 1 + allModels.length) % allModels.length];
-  const next = allModels[(index + 1) % allModels.length];
+  const previous = models[(index - 1 + models.length) % models.length];
+  const next = models[(index + 1) % models.length];
 
   return (
     <div
@@ -105,7 +106,7 @@ export default function ProductModal({
             <span className="modal-bar-sep" aria-hidden="true" />
             <span className="modal-cat"><span className="cat-dot" aria-hidden="true" />{model.catName}</span>
             <span>
-              {String(index + 1).padStart(2, '0')} / {String(allModels.length).padStart(2, '0')}
+              {String(index + 1).padStart(2, '0')} / {String(models.length).padStart(2, '0')}
             </span>
           </div>
           <button

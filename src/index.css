@@ -382,6 +382,15 @@ img, svg { display: block; }
 .section-heading { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 60px; }
 .section-index { display: block; margin-bottom: 22px; color: #7c7f86; font-family: 'Roboto Condensed', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
 .section-heading :is(h1, h2), .contact-intro h2 { margin: 0; font-family: 'Montserrat', sans-serif; font-size: clamp(2.8rem, 4.6vw, 4.5rem); font-weight: 800; letter-spacing: -0.06em; line-height: 0.94; text-transform: uppercase; }
+[data-scroll-title][data-reveal='waiting'] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+[data-scroll-title][data-reveal='visible'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 700ms ease-out, transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 .section-heading-copy { max-width: 460px; justify-self: end; padding-bottom: 3px; }
 .section-heading-copy > span { display: block; margin-bottom: 15px; color: #62656c; font-family: 'Roboto Condensed', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
 .section-heading-copy p { margin: 0; color: #656870; font-size: 14px; line-height: 1.75; }
@@ -826,6 +835,7 @@ img, svg { display: block; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .binec-logo__ring { animation: none; }
+  [data-scroll-title][data-reveal] { opacity: 1; transform: none; transition: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 

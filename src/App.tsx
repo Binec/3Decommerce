@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import CatalogCard from './components/CatalogCard';
 import BinecLogo from './components/BinecLogo';
@@ -71,12 +71,17 @@ const normalize = (value: string) =>
 
 const priceValue = (price: string) => Number(price.replace(/[^0-9.]/g, ''));
 
+const MOBILE_QUERY = '(max-width: 767px)';
+const mobileModels = allModels.slice(0, 4);
+
 function modelFromUrl() {
   const id = new URLSearchParams(window.location.search).get('modelo');
-  return allModels.some((model) => model.id === id) ? id! : null;
+  const models = window.matchMedia(MOBILE_QUERY).matches ? mobileModels : allModels;
+  return models.some((model) => model.id === id) ? id! : null;
 }
 
 export default function App() {
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
   const [selectedId, setSelectedId] = useState(() => modelFromUrl() ?? allModels[0].id);
   const [modalOpen, setModalOpen] = useState(() => modelFromUrl() !== null);
   const [activeSection, setActiveSection] = useState('catalogo');
@@ -85,8 +90,67 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('featured');
 
-  const selectedModel = allModels.find((model) => model.id === selectedId) ?? allModels[0];
-  const selectedIndex = allModels.findIndex((model) => model.id === selectedModel.id);
+  // Limit the source list before filtering or sorting so the last three stay hidden on mobile.
+  const catalogModels = isMobile ? mobileModels : allModels;
+  const catalogCategories = useMemo(() => productCategories
+    .map((category) => ({
+      ...category,
+      models: category.models.filter((model) => catalogModels.some((item) => item.id === model.id)),
+    }))
+    .filter((category) => category.models.length > 0), [catalogModels]);
+  const activeCategoryFilter = catalogCategories.some((category) => category.id === categoryFilter)
+    ? categoryFilter
+    : 'todos';
+  const selectedModel = catalogModels.find((model) => model.id === selectedId) ?? catalogModels[0];
+  const selectedIndex = catalogModels.findIndex((model) => model.id === selectedModel.id);
+
+  useEffect(() => {
+    const media = window.matchMedia(MOBILE_QUERY);
+    const handleChange = () => setIsMobile(media.matches);
+    media.addEventListener('change', handleChange);
+    handleChange();
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (selectedId === selectedModel.id) return;
+    setSelectedId(selectedModel.id);
+    if (modalOpen) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('modelo', selectedModel.id);
+      window.history.replaceState({}, '', url);
+    }
+  }, [modalOpen, selectedId, selectedModel.id]);
+
+  useLayoutEffect(() => {
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Prepare before paint, then reveal each heading only the first time it enters view.
+    const titles = document.querySelectorAll<HTMLElement>('[data-scroll-title]');
+    titles.forEach((title) => {
+      if (title.dataset.reveal !== 'visible') title.dataset.reveal = 'waiting';
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const title = entry.target as HTMLElement;
+        title.dataset.reveal = 'visible';
+        observer.unobserve(title);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+
+    titles.forEach((title) => {
+      if (title.dataset.reveal !== 'visible') observer.observe(title);
+    });
+
+    return () => {
+      observer.disconnect();
+      titles.forEach((title) => {
+        if (title.dataset.reveal === 'waiting') delete title.dataset.reveal;
+      });
+    };
+  }, []);
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -135,8 +199,8 @@ export default function App() {
   };
 
   const stepProduct = (direction: number) => {
-    const nextIndex = (selectedIndex + direction + allModels.length) % allModels.length;
-    const nextId = allModels[nextIndex].id;
+    const nextIndex = (selectedIndex + direction + catalogModels.length) % catalogModels.length;
+    const nextId = catalogModels[nextIndex].id;
     setSelectedId(nextId);
     syncUrl(nextId);
   };
@@ -154,8 +218,8 @@ export default function App() {
 
   const filteredModels = useMemo(() => {
     const normalizedQuery = normalize(query.trim());
-    const result = allModels.filter((model) => {
-      const inCategory = categoryFilter === 'todos' || model.catId === categoryFilter;
+    const result = catalogModels.filter((model) => {
+      const inCategory = activeCategoryFilter === 'todos' || model.catId === activeCategoryFilter;
       const searchable = normalize(`${model.title} ${model.catName} ${model.description} ${model.bullets.join(' ')}`);
       return inCategory && (!normalizedQuery || searchable.includes(normalizedQuery));
     });
@@ -166,7 +230,7 @@ export default function App() {
       if (sort === 'name') return a.title.localeCompare(b.title, 'es');
       return allModels.indexOf(a) - allModels.indexOf(b);
     });
-  }, [categoryFilter, query, sort]);
+  }, [activeCategoryFilter, catalogModels, query, sort]);
 
   return (
     <div className="site-shell">
@@ -228,7 +292,7 @@ export default function App() {
             <div className="section-heading catalog-heading">
               <div>
                 <span className="section-index">01 / Catálogo 3D</span>
-                <h1>Tu catálogo.<br />Ahora en 3D.</h1>
+                <h1 data-scroll-title="">Tu catálogo.<br />Ahora en 3D.</h1>
               </div>
               <div className="section-heading-copy">
                 <span>Catálogos interactivos por BINEC</span>
@@ -238,17 +302,17 @@ export default function App() {
 
             <div className="catalog-toolbar">
               <div className="category-filters" aria-label="Filtrar por categoría">
-                <button type="button" className={categoryFilter === 'todos' ? 'is-active' : ''} onClick={() => setCategoryFilter('todos')} aria-pressed={categoryFilter === 'todos'}>
-                  Todos <span>{allModels.length}</span>
+                <button type="button" className={activeCategoryFilter === 'todos' ? 'is-active' : ''} onClick={() => setCategoryFilter('todos')} aria-pressed={activeCategoryFilter === 'todos'}>
+                  Todos <span>{catalogModels.length}</span>
                 </button>
-                {productCategories.map((category) => (
+                {catalogCategories.map((category) => (
                   <button
                     type="button"
                     key={category.id}
-                    className={`cat-chip ${categoryFilter === category.id ? 'is-active' : ''}`}
+                    className={`cat-chip ${activeCategoryFilter === category.id ? 'is-active' : ''}`}
                     style={{ '--cat-color': category.color } as CSSProperties}
                     onClick={() => setCategoryFilter(category.id)}
-                    aria-pressed={categoryFilter === category.id}
+                    aria-pressed={activeCategoryFilter === category.id}
                   >
                     <span className="cat-dot" aria-hidden="true" />
                     {category.name} <span>{category.models.length}</span>
@@ -278,7 +342,7 @@ export default function App() {
 
             <div className="catalog-results-meta" aria-live="polite">
               <span>{filteredModels.length} {filteredModels.length === 1 ? 'resultado' : 'resultados'}</span>
-              {(categoryFilter !== 'todos' || query) && <button type="button" onClick={() => { setCategoryFilter('todos'); setQuery(''); }}>Limpiar filtros</button>}
+              {(activeCategoryFilter !== 'todos' || query) && <button type="button" onClick={() => { setCategoryFilter('todos'); setQuery(''); }}>Limpiar filtros</button>}
             </div>
 
             {filteredModels.length > 0 ? (
@@ -312,7 +376,7 @@ export default function App() {
                   <span className="commerce-icon" aria-hidden="true"><Icon name="cart" size={17} /></span>
                   Tu catálogo también puede vender
                 </span>
-                <h2 id="commerce-title">De catálogo 3D<br />a ecommerce.</h2>
+                <h2 id="commerce-title" data-scroll-title="">De catálogo 3D<br />a ecommerce.</h2>
                 <p>
                   El mismo producto que se explora en 3D puede comprarse en línea.
                   Agregamos carrito, precios, existencias y checkout para que el catálogo
@@ -364,7 +428,7 @@ export default function App() {
             <div className="section-heading">
               <div>
                 <span className="section-index">02 / Experiencia 3D</span>
-                <h2>Muestra mejor.<br />Vende mejor.</h2>
+                <h2 data-scroll-title="">Muestra mejor.<br />Vende mejor.</h2>
               </div>
               <div className="section-heading-copy">
                 <span>Más claridad para decidir</span>
@@ -422,7 +486,7 @@ export default function App() {
           <div className="page-container contact-layout">
             <div className="contact-intro">
               <span className="section-index">03 / Contacto</span>
-              <h2>Hagamos tu<br />catálogo 3D.</h2>
+              <h2 data-scroll-title="">Hagamos tu<br />catálogo 3D.</h2>
               <p>Cuéntanos qué vendes y qué quieres mostrar. En BINEC te ayudamos a definir un catálogo 3D a la medida de tu marca.</p>
 
               <div className="contact-methods">
@@ -477,6 +541,7 @@ export default function App() {
       {modalOpen && (
         <ProductModal
           model={selectedModel}
+          models={catalogModels}
           index={selectedIndex}
           onClose={closeModal}
           onStep={stepProduct}
