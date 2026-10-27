@@ -76,8 +76,9 @@ export default function CatalogCard({ model, index, active, onSelect }: CatalogC
             aria-haspopup="dialog"
             aria-label={`Abrir ${model.title} en el visor 3D`}
           >
-            <span>{active ? 'En el visor' : 'Explorar'}</span>
-            <Icon name={active ? 'check' : 'arrow-up-right'} size={17} />
+            <Icon name="cube" size={16} />
+            <span>{active ? 'Abrir de nuevo' : 'Ver en 3D'}</span>
+            <Icon name="expand" size={15} className="catalog-card-cta-arrow" />
           </button>
         </div>
       </div>

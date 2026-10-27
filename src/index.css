@@ -454,9 +454,40 @@ img, svg { display: block; }
 .catalog-card-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 20px; padding-top: 17px; border-top: 1px solid #dedcd5; }
 .catalog-card-footer > div > span { display: block; margin-bottom: 5px; color: #93958f; font-family: 'Roboto Condensed', sans-serif; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
 .catalog-card-footer strong { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; }
-.catalog-card-footer button { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; border: 0; background: transparent; color: var(--ink); font-size: 10.5px; font-weight: 650; white-space: nowrap; transition: text-decoration-color 160ms ease; }
-.catalog-card-footer button:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 4px; }
-.catalog-card.is-active .catalog-card-footer button { text-decoration: underline; text-underline-offset: 4px; }
+/* Primary action of each card: solid pill that picks up the category colour. */
+.catalog-card-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 14px 10px 13px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px -12px rgba(11, 12, 15, 0.55);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.catalog-card-footer button:hover,
+.catalog-card-footer button:focus-visible {
+  background: var(--cat-color, var(--ink));
+  border-color: var(--cat-color, var(--ink));
+  box-shadow: 0 14px 28px -12px color-mix(in srgb, var(--cat-color, var(--ink)) 65%, transparent);
+  transform: translateY(-2px);
+}
+.catalog-card-footer button:active { transform: translateY(0); }
+.catalog-card-cta-arrow { opacity: 0.75; transition: transform 180ms ease, opacity 180ms ease; }
+.catalog-card-footer button:hover .catalog-card-cta-arrow { opacity: 1; transform: scale(1.12); }
+.catalog-card.is-active .catalog-card-footer button {
+  background: var(--cat-color, var(--ink));
+  border-color: var(--cat-color, var(--ink));
+}
+/* Whole card hints that it is interactive. */
+.catalog-card:hover .catalog-card-footer button { box-shadow: 0 14px 28px -12px rgba(11, 12, 15, 0.5); }
 .catalog-empty { display: flex; flex-direction: column; align-items: center; padding: 80px 24px; border: 1px dashed #c9c7bf; border-radius: 8px; color: #777a81; text-align: center; }
 .catalog-empty h3 { margin: 20px 0 8px; color: var(--ink); font-family: 'Montserrat', sans-serif; font-size: 22px; }
 .catalog-empty p { margin: 0 0 24px; font-size: 13px; }
@@ -1062,22 +1093,23 @@ img, svg { display: block; }
   }
   .hotspot-number { width: 30px; height: 30px; font-size: 11px; letter-spacing: 0.04em; }
 
-  .modal-panel .hotspot-label {
+  .hotspot-label {
     left: 50%;
     right: auto;
     top: calc(100% + 8px);
     width: max-content;
-    max-width: min(86vw, 340px);
-    padding: 6px 11px;
+    max-width: min(88vw, 340px);
+    padding: 7px 12px;
     translate: -50% -4px;
     border-radius: 999px;
-    border-color: rgba(11, 12, 15, 0.22);
+    border-color: rgba(11, 12, 15, 0.2);
     background: #fff;
-    box-shadow: 0 12px 26px -14px rgba(11, 12, 15, 0.6);
+    box-shadow: 0 12px 26px -14px rgba(11, 12, 15, 0.55);
     color: var(--ink);
     font-size: 10px;
     font-weight: 600;
     line-height: 1.25;
+    letter-spacing: 0.01em;
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
