@@ -776,9 +776,6 @@ img, svg { display: block; }
 @media (max-width: 599px) {
   .viewer-frame { height: 500px; }
   .viewer-gesture-hint { font-size: 8px; }
-  .model-hotspot.is-selected .hotspot-label { max-width: 130px; white-space: normal; }
-  .model-hotspot { width: 33px; height: 33px; }
-  .hotspot-label { max-width: 132px; }
   .feature-row { grid-template-columns: 28px minmax(0, 1fr) 31px; gap: 10px; }
   .feature-row h3 { font-size: 14px; }
   .technical-card dl > div { grid-template-columns: 40% 60%; gap: 10px; }
@@ -1048,6 +1045,57 @@ img, svg { display: block; }
     .modal-viewer { height: 90cqh; }
     .modal-info h2, .modal-info::after { height: 10cqh; }
   }
+}
+
+/* Mobile 3D bullets: bigger touch targets and a readable, card-like label.
+   Applies to the catalogue popup and to any viewer on a small screen. */
+@media (max-width: 767px) {
+  .model-hotspot,
+  .model-hotspot:hover,
+  .model-hotspot:focus-visible,
+  .model-hotspot.is-selected {
+    width: 42px;
+    height: 42px;
+    translate: 0 0;
+    border-color: rgba(11, 12, 15, 0.42);
+    box-shadow: 0 10px 22px -10px rgba(11, 12, 15, 0.55);
+  }
+  .hotspot-number { width: 30px; height: 30px; font-size: 11px; letter-spacing: 0.04em; }
+
+  .modal-panel .hotspot-label {
+    left: 50%;
+    right: auto;
+    top: calc(100% + 8px);
+    width: max-content;
+    max-width: min(86vw, 340px);
+    padding: 6px 11px;
+    translate: -50% -4px;
+    border-radius: 999px;
+    border-color: rgba(11, 12, 15, 0.22);
+    background: #fff;
+    box-shadow: 0 12px 26px -14px rgba(11, 12, 15, 0.6);
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    z-index: 3;
+  }
+  /* On narrow screens centre the label under its marker instead of beside it. */
+  .model-hotspot[data-side='left'] .hotspot-label,
+  .model-hotspot[data-side='right'] .hotspot-label {
+    left: 50%;
+    right: auto;
+    translate: -50% -4px;
+  }
+  .model-hotspot.is-selected .hotspot-label,
+  .model-hotspot:focus-visible .hotspot-label { translate: -50% 0; }
+  .model-hotspot.is-selected { z-index: 4; }
+  /* Keep the marker's number pinned while its label unfolds below. */
+  .model-hotspot.is-selected .hotspot-number { position: relative; z-index: 4; }
 }
 
 @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
