@@ -1,5 +1,5 @@
 // Original 3D assets and product content from the Ace Osteomedica catalogue.
-const BASE = '${import.meta.env.BASE_URL}models/';
+const BASE = `${import.meta.env.BASE_URL}models/`;
 
 export type Model = {
   id: string;
@@ -86,7 +86,7 @@ export const productCategories: Category[] = [
           'Resistente a corrosión salina',
           'Autoclavable a 134 °C',
         ],
-        modelUrl: BASE + 'pieza+meca%CC%81nica+3d_compressed.glb',
+        modelUrl: BASE + 'pieza-mecanica.glb',
       },
       {
         id: 'tornillo',
