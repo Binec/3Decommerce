@@ -1,5 +1,5 @@
 // Original 3D assets and product content from the Ace Osteomedica catalogue.
-const BASE = 'https://binec.github.io/13dcat/models/';
+const BASE = '${import.meta.env.BASE_URL}models/';
 
 export type Model = {
   id: string;
