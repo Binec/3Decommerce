@@ -49,7 +49,10 @@ function requestTopic(topic: string) {
   window.dispatchEvent(new CustomEvent('binec:request-topic', { detail: topic }));
 }
 
+// Número con lada de país (52) para que wa.me abra el chat correcto: 81 3073 8347.
 const WHATSAPP_NUMBER = '528130738347';
+const WHATSAPP_GENERAL_TEXT = 'Hola, vi su catálogo 3D y me gustaría más información.';
+const whatsappGeneral = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_GENERAL_TEXT)}`;
 const ecommerceWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(ECOMMERCE_TOPIC)}`;
 
 const ecommerceBenefits = [
@@ -419,6 +422,7 @@ export default function App() {
 
         <CatalogSection
           variant="compact"
+          onQuote={() => { requestTopic(ECOMMERCE_TOPIC); document.getElementById('cotizacion')?.scrollIntoView({ behavior: 'smooth' }); }}
           models={catalogModels}
           categories={catalogCategories}
           filteredModels={filteredModels}
@@ -444,7 +448,7 @@ export default function App() {
                 <a className="contact-email" href="mailto:hola@bineccc.com">hola@bineccc.com</a>
                 <a
                   className="contact-whatsapp"
-                  href="https://wa.me/528130738347"
+                  href={whatsappGeneral}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Escribir por WhatsApp al +52 813 073 8347"
@@ -485,7 +489,7 @@ export default function App() {
 
       <a
         className="wa-float"
-        href={`https://wa.me/${WHATSAPP_NUMBER}`}
+        href={whatsappGeneral}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escribir por WhatsApp al 81 3073 8347"

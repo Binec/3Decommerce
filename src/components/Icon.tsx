@@ -14,6 +14,7 @@ export type IconName =
   | 'cube'
   | 'download'
   | 'expand'
+  | 'form'
   | 'mail'
   | 'menu'
   | 'minimize'
@@ -56,6 +57,7 @@ export default function Icon({ name, size = 20, ...props }: IconProps) {
     play: <path d="m8 5 11 7-11 7V5Z" />,
     reset: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /></>,
     scan: <><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" /><circle cx="12" cy="12" r="3" /></>,
+    form: <><rect x="4" y="3" width="16" height="18" rx="2.5" /><path d="M8 8h8" /><path d="M8 12h8" /><path d="M8 16h4" /></>,
     search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
   };
 

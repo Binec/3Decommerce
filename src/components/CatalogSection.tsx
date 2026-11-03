@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import CatalogCard from './CatalogCard';
+import ShopCard from './ShopCard';
 import Icon from './Icon';
 import type { CatalogModel, Category } from '../data/catalog';
 
@@ -18,6 +19,7 @@ type CatalogSectionProps = {
   onSortChange: (sort: string) => void;
   onClearFilters: () => void;
   onSelect: (id: string) => void;
+  onQuote?: () => void;
 };
 
 export default function CatalogSection({
@@ -34,7 +36,14 @@ export default function CatalogSection({
   onSortChange,
   onClearFilters,
   onSelect,
+  onQuote,
 }: CatalogSectionProps) {
+  const [cart, setCart] = useState<string[]>([]);
+  const toggleCart = (id: string) =>
+    setCart((items) => (items.includes(id) ? items.filter((item) => item !== id) : [...items, id]));
+  const cartTotal = models
+    .filter((item) => cart.includes(item.id))
+    .reduce((sum, item) => sum + (parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0), 0);
   const [isDesktopRow, setIsDesktopRow] = useState(
     () => window.matchMedia('(min-width: 1024px)').matches,
   );
@@ -59,17 +68,49 @@ export default function CatalogSection({
     return (
       <section
         id="catalogo-alternativo"
-        className="catalog-section catalog-duplicate section-anchor"
-        aria-label="Productos del catálogo 3D"
+        className="shop-section section-anchor"
+        aria-label="Tienda en línea 3D"
       >
         <div className="page-container">
-          <div className="catalog-grid">
+          <div className="shop-banner">
+            <span className="shop-banner-bg" aria-hidden="true">
+              <Icon name="cart" size={420} strokeWidth={1.1} />
+            </span>
+            <div className="shop-banner-copy">
+              <span className="shop-banner-tag"><Icon name="cart" size={14} /> 3D Ecommerce</span>
+              <h2>Tu catálogo 3D<br />también <em>vende en línea</em><span className="accent-dot">.</span></h2>
+              <p>Convierte cada modelo en un producto de tienda: tu cliente lo gira, lo revisa y lo compra sin salir de la página.</p>
+            </div>
+            <div className="shop-banner-side">
+              <ul>
+                <li><Icon name="check" size={14} /> Carrito y checkout en línea</li>
+                <li><Icon name="check" size={14} /> Pago con tarjeta, SPEI y más</li>
+                <li><Icon name="check" size={14} /> Modelos 3D en cada producto</li>
+              </ul>
+              {onQuote && (
+                <button type="button" className="shop-banner-cta" onClick={onQuote}>
+                  <Icon name="form" size={18} /> Llenar formulario <Icon name="arrow-right" size={16} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="shop-bar">
+            <span>Demo de tienda · {displayModels.length} productos</span>
+            <span className="shop-cart" aria-live="polite">
+              <Icon name="cart" size={16} />
+              {cart.length} {cart.length === 1 ? 'artículo' : 'artículos'}
+              {cart.length > 0 && <strong>${cartTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>}
+            </span>
+          </div>
+
+          <div className="shop-grid">
             {displayModels.map((model) => (
-              <CatalogCard
+              <ShopCard
                 key={model.id}
                 model={model}
-                index={models.findIndex((item) => item.id === model.id)}
-                active={selectedId === model.id}
+                inCart={cart.includes(model.id)}
+                onToggleCart={toggleCart}
                 onSelect={onSelect}
               />
             ))}
