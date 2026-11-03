@@ -483,6 +483,20 @@ export default function App() {
         </div>
       </footer>
 
+      <a
+        className="wa-float"
+        href={`https://wa.me/${WHATSAPP_NUMBER}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribir por WhatsApp al 81 3073 8347"
+      >
+        <span className="wa-float-text">
+          <span className="wa-float-title">Escribir por WhatsApp</span>
+          <span className="wa-float-number">81 3073 8347</span>
+        </span>
+        <span className="wa-float-icon"><Icon name="whatsapp" size={24} /></span>
+      </a>
+
       {modalOpen && (
         <ProductModal
           model={selectedModel}
