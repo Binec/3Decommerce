@@ -7,6 +7,7 @@ import Icon from './components/Icon';
 import ProductModal from './components/ProductModal';
 import SampleRequest from './components/SampleRequest';
 import LanguageToggle from './components/LanguageToggle';
+import ThemeToggle from './components/ThemeToggle';
 import { allModels, productCategories } from './data/catalog';
 import { localizeCategory, localizeModel, useLang } from './i18n';
 
@@ -522,6 +523,8 @@ export default function App() {
         </span>
         <span className="wa-float-icon"><Icon name="whatsapp" size={24} /></span>
       </a>
+
+      <ThemeToggle />
 
       {modalOpen && (
         <ProductModal

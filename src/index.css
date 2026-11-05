@@ -1583,3 +1583,28 @@ html[lang='zh-CN'] .shop-card-price span { font-size: 13.0px !important; }
 html[lang='zh-CN'] .shop-card-meta { font-size: 12.5px !important; }
 html[lang='zh-CN'] .shop-card-view { font-size: 13.0px !important; }
 html[lang='zh-CN'] .shop-card-add { font-size: 13.0px !important; }
+
+/* Floating theme toggle */
+.theme-toggle {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #b3b1a9;
+  border-radius: 50%;
+  background: rgba(250, 249, 246, 0.9);
+  color: var(--ink);
+  box-shadow: 0 6px 20px rgba(11, 12, 15, 0.14);
+  backdrop-filter: blur(8px);
+  transition: transform 180ms ease, background 200ms ease, color 200ms ease;
+}
+.theme-toggle:hover { transform: scale(1.08); }
+.theme-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+html[data-theme='dark'] .theme-toggle { border-color: #4a4c55; background: rgba(30, 32, 38, 0.9); color: #f1efe9; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); }
+@media (max-width: 767px) { .theme-toggle { left: 14px; bottom: 14px; width: 40px; height: 40px; } }
+html[data-theme='dark'] .icon-button.is-active { background: #e2e4e8; color: #101114; }
+html[data-theme='dark'] .icon-button.is-active svg { color: #101114; }
