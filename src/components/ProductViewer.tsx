@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ModelViewerElement } from '../model-viewer';
 import type { CatalogModel } from '../data/catalog';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 
 type Anchor = {
   position: string;
@@ -143,6 +144,7 @@ function sampleAnchors(viewer: ViewerElement): Anchor[] | null {
 }
 
 export default function ProductViewer({ model }: ProductViewerProps) {
+  const { t } = useLang();
   const viewerRef = useRef<ViewerElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<number[]>([]);
@@ -292,7 +294,7 @@ export default function ProductViewer({ model }: ProductViewerProps) {
               onMouseLeave={() => setHoveredHotspot(null)}
               onFocus={() => setHoveredHotspot(index)}
               onBlur={() => setHoveredHotspot(null)}
-              aria-label={`Característica ${index + 1}: ${bullets[index]}`}
+              aria-label={t(`Característica ${index + 1}: ${bullets[index]}`, `Feature ${index + 1}: ${bullets[index]}`, `特点 ${index + 1}：${bullets[index]}`)}
               aria-expanded={selectedHotspot === index}
             >
               <span className="hotspot-number">0{index + 1}</span>
@@ -305,13 +307,13 @@ export default function ProductViewer({ model }: ProductViewerProps) {
         <div className="viewer-badges">
           <span className="viewer-badge viewer-badge-primary">{model.catName}</span>
         </div>
-        <div className="viewer-controls" aria-label="Controles del modelo 3D">
+        <div className="viewer-controls" aria-label={t('Controles del modelo 3D', '3D model controls')}>
           <button
             type="button"
             className={`icon-button ${autoRotate ? 'is-active' : ''}`}
             onClick={() => setAutoRotate((value) => !value)}
-            aria-label={autoRotate ? 'Pausar rotación automática' : 'Activar rotación automática'}
-            data-tooltip={autoRotate ? 'Pausar rotación' : 'Rotar modelo'}
+            aria-label={autoRotate ? t('Pausar rotación automática', 'Pause auto-rotation') : t('Activar rotación automática', 'Enable auto-rotation')}
+            data-tooltip={autoRotate ? t('Pausar rotación', 'Pause rotation') : t('Rotar modelo', 'Rotate model')}
           >
             <Icon name={autoRotate ? 'pause' : 'play'} size={17} />
           </button>
@@ -319,9 +321,9 @@ export default function ProductViewer({ model }: ProductViewerProps) {
             type="button"
             className={`icon-button ${showHotspots ? 'is-active' : ''}`}
             onClick={() => setShowHotspots((value) => !value)}
-            aria-label={showHotspots ? 'Ocultar características' : 'Mostrar características'}
+            aria-label={showHotspots ? t('Ocultar características', 'Hide features') : t('Mostrar características', 'Show features')}
             aria-pressed={showHotspots}
-            data-tooltip="Características"
+            data-tooltip={t('Características', 'Features')}
           >
             <Icon name="scan" size={17} />
           </button>
@@ -329,8 +331,8 @@ export default function ProductViewer({ model }: ProductViewerProps) {
             type="button"
             className="icon-button"
             onClick={resetCamera}
-            aria-label="Restablecer vista del modelo"
-            data-tooltip="Restablecer vista"
+            aria-label={t('Restablecer vista del modelo', 'Reset model view')}
+            data-tooltip={t('Restablecer vista', 'Reset view')}
           >
             <Icon name="reset" size={17} />
           </button>
@@ -338,8 +340,8 @@ export default function ProductViewer({ model }: ProductViewerProps) {
             type="button"
             className="icon-button"
             onClick={toggleFullscreen}
-            aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Ver en pantalla completa'}
-            data-tooltip={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+            aria-label={isFullscreen ? t('Salir de pantalla completa', 'Exit full screen') : t('Ver en pantalla completa', 'View full screen')}
+            data-tooltip={isFullscreen ? t('Salir de pantalla completa', 'Exit full screen') : t('Pantalla completa', 'Full screen')}
           >
             <Icon name={isFullscreen ? 'minimize' : 'expand'} size={17} />
           </button>
@@ -349,7 +351,7 @@ export default function ProductViewer({ model }: ProductViewerProps) {
       {status === 'loading' && (
         <div className="viewer-loading" role="status" aria-live="polite">
           <div className="loading-cube"><Icon name="cube" size={28} /></div>
-          <span>Cargando geometría 3D</span>
+          <span>{t('Cargando geometría 3D', 'Loading 3D geometry')}</span>
           <div className="loading-track"><span style={{ width: `${Math.max(progress, 4)}%` }} /></div>
           <small>{progress}%</small>
         </div>
@@ -358,8 +360,8 @@ export default function ProductViewer({ model }: ProductViewerProps) {
       {status === 'error' && (
         <div className="viewer-error" role="alert">
           <Icon name="cube" size={30} />
-          <strong>No se pudo cargar el modelo</strong>
-          <span>Comprueba tu conexión e inténtalo de nuevo.</span>
+          <strong>{t('No se pudo cargar el modelo', 'The model could not be loaded')}</strong>
+          <span>{t('Comprueba tu conexión e inténtalo de nuevo.', 'Check your connection and try again.')}</span>
           <div>
             <button
               type="button"
@@ -370,16 +372,16 @@ export default function ProductViewer({ model }: ProductViewerProps) {
                 setAttempt((value) => value + 1);
               }}
             >
-              Reintentar
+              {t('Reintentar', 'Retry')}
             </button>
-            <a href={model.modelUrl} target="_blank" rel="noreferrer">Abrir GLB</a>
+            <a href={model.modelUrl} target="_blank" rel="noreferrer">{t('Abrir GLB', 'Open GLB')}</a>
           </div>
         </div>
       )}
 
       <div className="viewer-gesture-hint">
         <Icon name="mouse" size={14} />
-        <span>Arrastra para girar · Scroll para acercar</span>
+        <span>{t('Arrastra para girar · Scroll para acercar', 'Drag to rotate · Scroll to zoom')}</span>
       </div>
 
     </div>

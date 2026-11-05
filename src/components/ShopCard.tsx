@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { ModelViewerElement } from '../model-viewer';
 import type { CatalogModel } from '../data/catalog';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 
 type ShopCardProps = {
   model: CatalogModel;
@@ -12,6 +13,7 @@ type ShopCardProps = {
 };
 
 export default function ShopCard({ model, inCart, onToggleCart, onSelect }: ShopCardProps) {
+  const { t } = useLang();
   const viewerRef = useRef<ModelViewerElement>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -29,7 +31,7 @@ export default function ShopCard({ model, inCart, onToggleCart, onSelect }: Shop
         <model-viewer
           ref={viewerRef}
           src={model.modelUrl}
-          alt={`Vista 3D de ${model.title}`}
+          alt={t(`Vista 3D de ${model.title}`, `3D view of ${model.title}`, `${model.title} 的 3D 视图`)}
           camera-controls=""
           auto-rotate=""
           camera-orbit="20deg 70deg 105%"
@@ -41,9 +43,9 @@ export default function ShopCard({ model, inCart, onToggleCart, onSelect }: Shop
           reveal="auto"
           style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
         />
-        {!loaded && <span className="shop-card-loading">Cargando 3D…</span>}
-        <span className="shop-card-badge">{model.badge ?? 'Nuevo'}</span>
-        <span className="shop-card-3d"><Icon name="cube" size={12} /> Gira en 3D</span>
+        {!loaded && <span className="shop-card-loading">{t('Cargando 3D…', 'Loading 3D…')}</span>}
+        <span className="shop-card-badge">{model.badge ?? t('Nuevo', 'New')}</span>
+        <span className="shop-card-3d"><Icon name="cube" size={12} /> {t('Gira en 3D', 'Rotate in 3D')}</span>
       </div>
 
       <div className="shop-card-body">
@@ -54,11 +56,11 @@ export default function ShopCard({ model, inCart, onToggleCart, onSelect }: Shop
         <h3>{model.title}</h3>
         <div className="shop-card-price">
           <strong>{model.price}</strong>
-          <span>IVA incluido</span>
+          <span>{t('IVA incluido', 'VAT included')}</span>
         </div>
         <ul className="shop-card-meta">
-          <li><Icon name="check" size={12} /> En existencia</li>
-          <li><Icon name="check" size={12} /> Envío a todo México</li>
+          <li><Icon name="check" size={12} /> {t('En existencia', 'In stock')}</li>
+          <li><Icon name="check" size={12} /> {t('Envío a todo México', 'Shipping across Mexico')}</li>
         </ul>
         <button
           type="button"
@@ -67,16 +69,16 @@ export default function ShopCard({ model, inCart, onToggleCart, onSelect }: Shop
           aria-pressed={inCart}
         >
           <Icon name={inCart ? 'check' : 'cart'} size={16} />
-          {inCart ? 'Agregado' : 'Agregar al carrito'}
+          {inCart ? t('Agregado', 'Added') : t('Agregar al carrito', 'Add to cart')}
         </button>
         <button
           type="button"
           className="shop-card-view"
           onClick={() => onSelect(model.id)}
           aria-haspopup="dialog"
-          aria-label={`Ver ${model.title} en el visor 3D`}
+          aria-label={t(`Ver ${model.title} en el visor 3D`, `View ${model.title} in the 3D viewer`, `在 3D 查看器中查看 ${model.title}`)}
         >
-          <Icon name="expand" size={14} /> Ver detalle en 3D
+          <Icon name="expand" size={14} /> {t('Ver detalle en 3D', 'View 3D detail')}
         </button>
       </div>
     </article>

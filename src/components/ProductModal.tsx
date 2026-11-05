@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { CatalogModel } from '../data/catalog';
 import CtaButton from './CtaButton';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 import ProductViewer from './ProductViewer';
 
 type ProductModalProps = {
@@ -27,6 +28,7 @@ export default function ProductModal({
   onRequestSample,
   onOpenSpecs,
 }: ProductModalProps) {
+  const { t } = useLang();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const handlers = useRef({ onClose, onStep });
@@ -97,13 +99,13 @@ export default function ProductModal({
         className="modal-panel"
         role="dialog"
         aria-modal="true"
-        aria-label={`Visor 3D — ${model.title}`}
+        aria-label={t(`Visor 3D — ${model.title}`, `3D viewer — ${model.title}`, `3D 查看器 — ${model.title}`)}
         ref={panelRef}
         style={{ '--cat-color': model.catColor } as CSSProperties}
       >
         <div className="modal-bar">
           <div className="modal-bar-label">
-            <strong>Visor 3D</strong>
+            <strong>{t('Visor 3D', '3D Viewer')}</strong>
             <span className="modal-bar-sep" aria-hidden="true" />
             <span className="modal-cat"><span className="cat-dot" aria-hidden="true" />{model.catName}</span>
             <span>
@@ -115,7 +117,7 @@ export default function ProductModal({
             className="modal-close"
             onClick={onClose}
             ref={closeRef}
-            aria-label="Cerrar el visor (tecla Esc)"
+            aria-label={t('Cerrar el visor (tecla Esc)', 'Close the viewer (Esc key)')}
           >
             <Icon name="close" size={18} />
           </button>
@@ -142,14 +144,14 @@ export default function ProductModal({
             </ul>
 
             <div className="modal-price">
-              <span>Precio de catálogo</span>
+              <span>{t('Precio de catálogo', 'Catalog price')}</span>
               <strong>{model.price}</strong>
             </div>
 
             <div className="modal-actions">
-              <CtaButton onClick={onRequestSample}>Quiero un catálogo así</CtaButton>
+              <CtaButton onClick={onRequestSample}>{t('Quiero un catálogo así', 'I want a catalog like this')}</CtaButton>
               <button type="button" className="button button-outline" onClick={onOpenSpecs}>
-                Experiencia 3D <Icon name="arrow-right" size={16} />
+                {t('Experiencia 3D', '3D Experience')} <Icon name="arrow-right" size={16} />
               </button>
             </div>
 
@@ -157,16 +159,16 @@ export default function ProductModal({
               <button
                 type="button"
                 onClick={() => onStep(-1)}
-                aria-label={`Producto anterior: ${previous.title}`}
+                aria-label={t(`Producto anterior: ${previous.title}`, `Previous product: ${previous.title}`, `上一个产品：${previous.title}`)}
                 title={previous.title}
               >
                 <Icon name="chevron-left" size={18} />
               </button>
-              <span>Anterior / Siguiente producto</span>
+              <span>{t('Anterior / Siguiente producto', 'Previous / Next product')}</span>
               <button
                 type="button"
                 onClick={() => onStep(1)}
-                aria-label={`Producto siguiente: ${next.title}`}
+                aria-label={t(`Producto siguiente: ${next.title}`, `Next product: ${next.title}`, `下一个产品：${next.title}`)}
                 title={next.title}
               >
                 <Icon name="chevron-right" size={18} />

@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { ModelViewerElement } from '../model-viewer';
 import type { CatalogModel } from '../data/catalog';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 
 type CatalogCardProps = {
   model: CatalogModel;
@@ -12,6 +13,7 @@ type CatalogCardProps = {
 };
 
 export default function CatalogCard({ model, index, active, onSelect }: CatalogCardProps) {
+  const { t } = useLang();
   const viewerRef = useRef<ModelViewerElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -38,7 +40,7 @@ export default function CatalogCard({ model, index, active, onSelect }: CatalogC
         <model-viewer
           ref={viewerRef}
           src={model.modelUrl}
-          alt={`Vista 3D de ${model.title}`}
+          alt={t(`Vista 3D de ${model.title}`, `3D view of ${model.title}`, `${model.title} 的 3D 视图`)}
           camera-controls=""
           camera-orbit="20deg 70deg 105%"
           interaction-prompt="none"
@@ -49,10 +51,10 @@ export default function CatalogCard({ model, index, active, onSelect }: CatalogC
           reveal="auto"
           style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
         />
-        {!loaded && !failed && <span className="catalog-loading">Cargando 3D…</span>}
+        {!loaded && !failed && <span className="catalog-loading">{t('Cargando 3D…', 'Loading 3D…')}</span>}
         {failed && (
           <a className="catalog-fallback" href={model.modelUrl} target="_blank" rel="noreferrer">
-            Abrir archivo 3D <Icon name="arrow-up-right" size={14} />
+            {t('Abrir archivo 3D', 'Open 3D file')} <Icon name="arrow-up-right" size={14} />
           </a>
         )}
         <span className="catalog-index">{String(index + 1).padStart(2, '0')}</span>
@@ -67,17 +69,17 @@ export default function CatalogCard({ model, index, active, onSelect }: CatalogC
         <p>{model.description}</p>
         <div className="catalog-card-footer">
           <div>
-            <span>Precio de catálogo</span>
+            <span>{t('Precio de catálogo', 'Catalog price')}</span>
             <strong>{model.price}</strong>
           </div>
           <button
             type="button"
             onClick={() => onSelect(model.id)}
             aria-haspopup="dialog"
-            aria-label={`Abrir ${model.title} en el visor 3D`}
+            aria-label={t(`Abrir ${model.title} en el visor 3D`, `Open ${model.title} in the 3D viewer`, `在 3D 查看器中打开 ${model.title}`)}
           >
             <Icon name="cube" size={16} />
-            <span>{active ? 'Abrir de nuevo' : 'Ver en 3D'}</span>
+            <span>{active ? t('Abrir de nuevo', 'Open again') : t('Ver en 3D', 'View in 3D')}</span>
             <Icon name="expand" size={15} className="catalog-card-cta-arrow" />
           </button>
         </div>

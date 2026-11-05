@@ -2,16 +2,30 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import CtaButton from './CtaButton';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xblpnkle';
 const MAX_MESSAGE = 400;
 
+// Values stay in Spanish (they are what the team receives); labels are translated.
 export const SERVICE_OPTIONS = [
   'Catálogo 3D',
   'Catálogo + ecommerce',
   'Modelado 3D de productos',
   'Otro',
 ] as const;
+const SERVICE_LABELS_ZH: Record<string, string> = {
+  'Catálogo 3D': '3D 目录',
+  'Catálogo + ecommerce': '目录 + 电商',
+  'Modelado 3D de productos': '产品 3D 建模',
+  'Otro': '其他',
+};
+const SERVICE_LABELS_EN: Record<string, string> = {
+  'Catálogo 3D': '3D catalog',
+  'Catálogo + ecommerce': 'Catalog + ecommerce',
+  'Modelado 3D de productos': '3D product modeling',
+  'Otro': 'Other',
+};
 export const ECOMMERCE_SERVICE = 'Catálogo + ecommerce';
 
 type FormFields = {
@@ -50,6 +64,7 @@ type FieldProps = {
   optional?: boolean;
   disabled?: boolean;
   inputRef?: React.Ref<HTMLTextAreaElement>;
+  optionalLabel?: string;
 };
 
 /** Rounded translucent field from bineccc.com, with inline validation. */
@@ -68,6 +83,7 @@ function Field({
   optional,
   disabled,
   inputRef,
+  optionalLabel = 'Opcional',
 }: FieldProps) {
   const className = `bf-input${error ? ' has-error' : ''}${textarea ? ' bf-textarea' : ''}`;
   const describedBy = error ? `${id}-error` : undefined;
@@ -76,7 +92,7 @@ function Field({
     <div className="bf-field">
       <label htmlFor={id} className="bf-label">
         {label}
-        {optional && <span className="bf-optional">Opcional</span>}
+        {optional && <span className="bf-optional">{optionalLabel}</span>}
       </label>
       {textarea ? (
         <textarea
@@ -119,6 +135,8 @@ function Field({
 }
 
 export default function SampleRequest() {
+  const { lang, t } = useLang();
+  const serviceLabel = (value: string) => (lang === 'en' ? SERVICE_LABELS_EN[value] ?? value : lang === 'zh' ? SERVICE_LABELS_ZH[value] ?? value : value);
   const [fields, setFields] = useState<FormFields>(initialFields);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>('idle');
@@ -151,12 +169,12 @@ export default function SampleRequest() {
 
   const validate = () => {
     const next: Errors = {};
-    if (!fields.name.trim()) next.name = 'Escribe tu nombre';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) next.email = 'Añade un correo válido';
+    if (!fields.name.trim()) next.name = t('Escribe tu nombre', 'Enter your name');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) next.email = t('Añade un correo válido', 'Enter a valid email');
     const phone = fields.phone.trim();
     const digits = phone.replace(/\D/g, '');
     if (phone && (digits.length < 7 || digits.length > 15 || !/^[+\d\s()-]+$/.test(phone))) {
-      next.phone = 'Añade un teléfono válido';
+      next.phone = t('Añade un teléfono válido', 'Enter a valid phone number');
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -177,7 +195,8 @@ export default function SampleRequest() {
           organization: fields.organization.trim(),
           phone: fields.phone.trim(),
           servicio: fields.service,
-          message: fields.message.trim() || 'Me interesa crear un catálogo 3D para mi marca. Quisiera recibir una cotización.',
+          idioma: lang,
+          message: fields.message.trim() || t('Me interesa crear un catálogo 3D para mi marca. Quisiera recibir una cotización.', 'I am interested in creating a 3D catalog for my brand. I would like to receive a quote.'),
           _replyto: fields.email.trim(),
           _subject: `Cotización de ${fields.service} - ${fields.name.trim()} - BINEC`,
         }),
@@ -202,13 +221,13 @@ export default function SampleRequest() {
           <circle className="bf-success-circle" cx="26" cy="26" r="25" />
           <path className="bf-success-check" d="M16 27 l7 7 l14 -15" />
         </svg>
-        <h3>Gracias, {firstName}.</h3>
+        <h3>{t('Gracias', 'Thank you')}{lang === 'zh' ? '，' : ', '}{firstName}{lang === 'zh' ? '。' : '.'}</h3>
         <p>
-          Recibimos tu solicitud. Te responderemos a <span>{fields.email.trim()}</span> en breve.
+          {t('Recibimos tu solicitud. Te responderemos a', 'We received your request. We will reply to')} <span>{fields.email.trim()}</span>{lang === 'zh' ? '。' : ' ' + t('en breve.', 'shortly.')}
         </p>
-        <span className="bf-success-topic">Tema — {fields.service}</span>
+        <span className="bf-success-topic">{t('Tema', 'Topic')} — {serviceLabel(fields.service)}</span>
         <button type="button" className="bf-secondary" onClick={reset}>
-          Enviar otro mensaje
+          {t('Enviar otro mensaje', 'Send another message')}
         </button>
       </div>
     );
@@ -221,8 +240,8 @@ export default function SampleRequest() {
       <div className="bf-grid">
         <Field
           id="cotizacion-nombre"
-          label="Nombre"
-          placeholder="Tu nombre"
+          label={t('Nombre', 'Name')}
+          placeholder={t('Tu nombre', 'Your name')}
           autoComplete="name"
           value={fields.name}
           onChange={(value) => update('name', value)}
@@ -232,8 +251,8 @@ export default function SampleRequest() {
         <Field
           id="cotizacion-correo"
           type="email"
-          label="Correo"
-          placeholder="nombre@empresa.com"
+          label={t('Correo', 'Email')}
+          placeholder={t('nombre@empresa.com', 'name@company.com')}
           autoComplete="email"
           inputMode="email"
           value={fields.email}
@@ -243,18 +262,19 @@ export default function SampleRequest() {
         />
         <Field
           id="cotizacion-empresa"
-          label="Empresa / Marca"
-          placeholder="Nombre de tu empresa"
+          label={t('Empresa / Marca', 'Company / Brand')}
+          placeholder={t('Nombre de tu empresa', 'Your company name')}
           autoComplete="organization"
           value={fields.organization}
           onChange={(value) => update('organization', value)}
           optional
+          optionalLabel={t('Opcional', 'Optional')}
           disabled={submitting}
         />
         <Field
           id="cotizacion-telefono"
           type="tel"
-          label="Teléfono"
+          label={t('Teléfono', 'Phone')}
           placeholder="+52 81 1234 5678"
           autoComplete="tel"
           inputMode="tel"
@@ -263,12 +283,13 @@ export default function SampleRequest() {
           onChange={(value) => update('phone', value)}
           error={errors.phone}
           optional
+          optionalLabel={t('Opcional', 'Optional')}
           disabled={submitting}
         />
       </div>
 
       <fieldset className="bf-services">
-        <legend className="bf-label">¿Qué te interesa?</legend>
+        <legend className="bf-label">{t('¿Qué te interesa?', 'What are you interested in?')}</legend>
         <div className="bf-pills">
           {SERVICE_OPTIONS.map((option) => {
             const active = fields.service === option;
@@ -281,7 +302,7 @@ export default function SampleRequest() {
                 aria-pressed={active}
                 disabled={submitting}
               >
-                {option}
+                {serviceLabel(option)}
               </button>
             );
           })}
@@ -291,8 +312,8 @@ export default function SampleRequest() {
       <div className="bf-message">
         <Field
           id="cotizacion-mensaje"
-          label="Mensaje"
-          placeholder="Cuéntanos qué productos quieres mostrar y cómo imaginas tu catálogo 3D."
+          label={t('Mensaje', 'Message')}
+          placeholder={t('Cuéntanos qué productos quieres mostrar y cómo imaginas tu catálogo 3D.', 'Tell us which products you want to showcase and how you imagine your 3D catalog.')}
           textarea
           maxLength={MAX_MESSAGE}
           value={fields.message}
@@ -308,14 +329,14 @@ export default function SampleRequest() {
       {status === 'error' && (
         <p role="alert" className="bf-error bf-error--form">
           <Icon name="alert" size={14} />
-          No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.
+          {t('No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.', 'Could not send. Try again or message us on WhatsApp.')}
         </p>
       )}
 
       <div className="bf-actions">
-        <p>Sin spam. Solo respondemos a tu proyecto.</p>
+        <p>{t('Sin spam. Solo respondemos a tu proyecto.', 'No spam. We only reply about your project.')}</p>
         <CtaButton type="submit" shape="square" disabled={submitting} loading={submitting}>
-          {submitting ? 'Enviando…' : 'Solicitar cotización'}
+          {submitting ? t('Enviando…', 'Sending…') : t('Solicitar cotización', 'Request a quote')}
         </CtaButton>
       </div>
     </form>

@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import CatalogCard from './CatalogCard';
 import ShopCard from './ShopCard';
 import Icon from './Icon';
+import { useLang } from '../i18n';
 import type { CatalogModel, Category } from '../data/catalog';
 
 type CatalogSectionProps = {
@@ -38,6 +39,7 @@ export default function CatalogSection({
   onSelect,
   onQuote,
 }: CatalogSectionProps) {
+  const { lang, t, r } = useLang();
   const [cart, setCart] = useState<string[]>([]);
   const toggleCart = (id: string) =>
     setCart((items) => (items.includes(id) ? items.filter((item) => item !== id) : [...items, id]));
@@ -69,7 +71,7 @@ export default function CatalogSection({
       <section
         id="catalogo-alternativo"
         className="shop-section section-anchor"
-        aria-label="Tienda en línea 3D"
+        aria-label={t('Tienda en línea 3D', '3D online store')}
       >
         <div className="page-container">
           <div className="shop-banner">
@@ -77,30 +79,30 @@ export default function CatalogSection({
               <Icon name="cart" size={420} strokeWidth={1.1} />
             </span>
             <div className="shop-banner-copy">
-              <span className="shop-banner-tag"><Icon name="cart" size={14} /> 3D Ecommerce</span>
-              <h2>Tu catálogo 3D<br />también <em>vende en línea</em><span className="accent-dot">.</span></h2>
-              <p>Convierte cada modelo en un producto de tienda: tu cliente lo gira, lo revisa y lo compra sin salir de la página.</p>
+              <span className="shop-banner-tag"><Icon name="cart" size={14} /> {t('3D Ecommerce', '3D Ecommerce', '3D 电商')}</span>
+              <h2>{r(<>Tu catálogo 3D<br />también <em>vende en línea</em></>, <>Your 3D catalog<br />also <em>sells online</em></>, <>您的 3D 目录<br />也能<em>在线销售</em></>)}<span className="accent-dot">.</span></h2>
+              <p>{t('Convierte cada modelo en un producto de tienda: tu cliente lo gira, lo revisa y lo compra sin salir de la página.', 'Turn every model into a store product: your customer rotates it, reviews it and buys it without leaving the page.')}</p>
             </div>
             <div className="shop-banner-side">
               <ul>
-                <li><Icon name="check" size={14} /> Carrito y checkout en línea</li>
-                <li><Icon name="check" size={14} /> Pago con tarjeta, SPEI y más</li>
-                <li><Icon name="check" size={14} /> Modelos 3D en cada producto</li>
+                <li><Icon name="check" size={14} /> {t('Carrito y checkout en línea', 'Online cart and checkout')}</li>
+                <li><Icon name="check" size={14} /> {t('Pago con tarjeta, SPEI y más', 'Card, SPEI and other payments')}</li>
+                <li><Icon name="check" size={14} /> {t('Modelos 3D en cada producto', '3D models on every product')}</li>
               </ul>
               {onQuote && (
                 <button type="button" className="shop-banner-cta" onClick={onQuote}>
-                  <Icon name="form" size={18} /> Llenar formulario <Icon name="arrow-right" size={16} />
+                  <Icon name="form" size={18} /> {t('Llenar formulario', 'Fill out the form')} <Icon name="arrow-right" size={16} />
                 </button>
               )}
             </div>
           </div>
 
           <div className="shop-bar">
-            <span>Demo de tienda · {displayModels.length} productos</span>
+            <span>{t('Demo de tienda', 'Store demo')} · {displayModels.length} {t('productos', 'products')}</span>
             <span className="shop-cart" aria-live="polite">
               <Icon name="cart" size={16} />
-              {cart.length} {cart.length === 1 ? 'artículo' : 'artículos'}
-              {cart.length > 0 && <strong>${cartTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>}
+              {cart.length} {cart.length === 1 ? t('artículo', 'item') : t('artículos', 'items')}
+              {cart.length > 0 && <strong>${cartTotal.toLocaleString(lang === 'en' ? 'en-US' : lang === 'zh' ? 'zh-CN' : 'es-MX', { minimumFractionDigits: 2 })} MXN</strong>}
             </span>
           </div>
 
@@ -124,29 +126,29 @@ export default function CatalogSection({
     <section
       id="catalogo"
       className="catalog-section catalog-hero section-anchor"
-      aria-label="Catálogo 3D principal"
+      aria-label={t('Catálogo 3D principal', 'Main 3D catalog')}
     >
       <div className="page-container">
         <div className="section-heading catalog-heading" data-scroll-title="">
           <div>
-            <span className="section-index">01 / Catálogo 3D</span>
-            <h1>Tu catálogo.<br />Ahora en 3D.</h1>
+            <span className="section-index">01 / {t('Catálogo 3D', '3D Catalog')}</span>
+            <h1>{r(<>Tu catálogo.<br />Ahora en 3D.</>, <>Your catalog.<br />Now in 3D.</>, <>您的目录。<br />现在进入 3D。</>)}</h1>
           </div>
           <div className="section-heading-copy">
-            <span>Catálogos interactivos por BINEC</span>
-            <p>Transforma tus productos en una experiencia que tus clientes puedan explorar. Abre un modelo de esta demo e imagina tu marca en 3D.</p>
+            <span>{t('Catálogos interactivos por BINEC', 'Interactive catalogs by BINEC')}</span>
+            <p>{t('Transforma tus productos en una experiencia que tus clientes puedan explorar. Abre un modelo de esta demo e imagina tu marca en 3D.', 'Turn your products into an experience your customers can explore. Open a model from this demo and imagine your brand in 3D.')}</p>
           </div>
         </div>
 
         <div className="catalog-toolbar">
-          <div className="category-filters" aria-label="Filtrar por categoría">
+          <div className="category-filters" aria-label={t('Filtrar por categoría', 'Filter by category')}>
             <button
               type="button"
               className={categoryFilter === 'todos' ? 'is-active' : ''}
               onClick={() => onCategoryChange('todos')}
               aria-pressed={categoryFilter === 'todos'}
             >
-              Todos <span>{models.length}</span>
+              {t('Todos', 'All')} <span>{models.length}</span>
             </button>
             {categories.map((category) => (
               <button
@@ -165,38 +167,38 @@ export default function CatalogSection({
 
           <div className="catalog-tools">
             <label className="search-field">
-              <span className="sr-only">Buscar en el catálogo</span>
+              <span className="sr-only">{t('Buscar en el catálogo', 'Search the catalog')}</span>
               <Icon name="search" size={18} />
               <input
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
-                placeholder="Buscar modelo…"
+                placeholder={t('Buscar modelo…', 'Search model…')}
                 type="search"
               />
               {query && (
-                <button type="button" onClick={() => onQueryChange('')} aria-label="Limpiar búsqueda">
+                <button type="button" onClick={() => onQueryChange('')} aria-label={t('Limpiar búsqueda', 'Clear search')}>
                   <Icon name="close" size={15} />
                 </button>
               )}
             </label>
             <label className="sort-field">
-              <span className="sort-label" aria-hidden="true">Ordenar</span>
+              <span className="sort-label" aria-hidden="true">{t('Ordenar', 'Sort')}</span>
               <span className="sort-divider" aria-hidden="true" />
-              <span className="sr-only">Ordenar catálogo</span>
+              <span className="sr-only">{t('Ordenar catálogo', 'Sort catalog')}</span>
               <select value={sort} onChange={(event) => onSortChange(event.target.value)}>
-                <option value="featured">Destacados</option>
-                <option value="name">Nombre A–Z</option>
-                <option value="price-asc">Precio: menor</option>
-                <option value="price-desc">Precio: mayor</option>
+                <option value="featured">{t('Destacados', 'Featured')}</option>
+                <option value="name">{t('Nombre A–Z', 'Name A–Z')}</option>
+                <option value="price-asc">{t('Precio: menor', 'Price: low to high')}</option>
+                <option value="price-desc">{t('Precio: mayor', 'Price: high to low')}</option>
               </select>
             </label>
           </div>
         </div>
 
         <div className="catalog-results-meta" aria-live="polite">
-          <span>{filteredModels.length} {filteredModels.length === 1 ? 'resultado' : 'resultados'}</span>
+          <span>{filteredModels.length} {filteredModels.length === 1 ? t('resultado', 'result') : t('resultados', 'results')}</span>
           {(categoryFilter !== 'todos' || query) && (
-            <button type="button" onClick={onClearFilters}>Limpiar filtros</button>
+            <button type="button" onClick={onClearFilters}>{t('Limpiar filtros', 'Clear filters')}</button>
           )}
         </div>
 
@@ -215,10 +217,10 @@ export default function CatalogSection({
         ) : (
           <div className="catalog-empty">
             <Icon name="search" size={30} />
-            <h3>No encontramos ese modelo</h3>
-            <p>Pruebe con otra palabra o explore todas las categorías.</p>
+            <h3>{t('No encontramos ese modelo', 'We couldn\'t find that model')}</h3>
+            <p>{t('Pruebe con otra palabra o explore todas las categorías.', 'Try another word or explore all categories.')}</p>
             <button type="button" className="button button-dark" onClick={onClearFilters}>
-              Ver todos los modelos
+              {t('Ver todos los modelos', 'View all models')}
             </button>
           </div>
         )}
